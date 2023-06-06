@@ -1,19 +1,13 @@
 import socket
 import threading
 
-debug_exit = False
-
 def handle_client(client_socket, client_address):
+    global debug_exit
     while True:
         message = client_socket.recv(1024).decode()
-        if message == 'exit server':
-            debug_exit = True
         if not message:
             break
         print(f"Received from {client_address}: {message}")
-        # Forward the message to the other client
-        # other_client = clients[1] if client_socket == clients[0] else clients[0]
-        # other_client.send(message.encode())
 
     client_socket.close()
 
@@ -27,8 +21,6 @@ def run_server():
     print("Server listening on {}:{}".format(host, port))
 
     while True:
-        if debug_exit:
-            break
         client_socket, addr = server_socket.accept()
         print("Connected with", addr)
         clients.append(client_socket)

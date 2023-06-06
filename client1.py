@@ -11,9 +11,6 @@ def run_client():
         message = input("Enter message: ")
         client_socket.send(message.encode())
 
-        if message.lower() == "exit chat":
-            break
-
     client_socket.close()
 
 run_client()
