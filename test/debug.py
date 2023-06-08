@@ -7,11 +7,22 @@ class Person:
         self.name = name
         self.age = age
         
-data = []
+class mydatabase:
+    def __init__(self):
+        self.data = []
+
+    def append_data(self):
+        data.append({"name": person.name, "age": person.age})
+
+
 
 def append_data(person):
     data.append({"name": person.name, "age": person.age})
     
+def search_one(key,value):
+    
+    return
+
 def write_data():
     json_data = json.dumps(data)
     with open(filename, "w") as file:
