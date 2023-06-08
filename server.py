@@ -1,5 +1,6 @@
 import socket
 import threading
+import json
 
 def handle_client(client_socket, client_address):
     global debug_exit
@@ -8,6 +9,12 @@ def handle_client(client_socket, client_address):
         if not message:
             break
         print(f"Received from {client_address}: {message}")
+
+        data = {"sender": client_address, "message": message}
+        filename = "data.txt"
+        json_data = json.dumps(data)
+        with open(filename, "a") as file:
+            file.write(json_data)
 
     client_socket.close()
 
