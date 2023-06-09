@@ -4,16 +4,13 @@ import file_handler
 import threading
 from connection import Connection 
 
-fh = file_handler.File_Handler("data.txt")
+chatData = []
 
-myServer = Connection()
-myServer.init_as_server()
-myServer.accept_client_connection()
-myServer.send_json_array(fh.read_json_array())
-
+myClient = Connection()
+myClient.init_as_client()
 
 window = tkinter.Tk()
-window.title("Server Window")
+window.title("client Window")
 window.geometry("400x300")
 
 def mesg_entered(a = None):
@@ -23,25 +20,14 @@ def mesg_entered(a = None):
     enter_message_text.delete(0, tkinter.END)
     print(f'Entered text: {msg}')
 
-    fh.append_json_data({"index": fh.get_last_json()['index']+1, "sender": "server", "message": msg})
-    myServer.send_json_array(fh.read_json_array())
-    read_and_update_data()
-
+    myClient.send_mesg(msg)
+    
 def meg_recv():
     while True:
-        recv_mesg = myServer.recv_mesg()
-        if recv_mesg =="":
-            return
-        if recv_mesg.startswith("DELETE"):
-            delete_request_index = recv_mesg.split(':')[1].strip()
-            # print(recv_mesg)
-            # print(delete_request_index)
-            # print(f'Delete requrest: {delete_request_index}')
-            fh.del_json_with_index(int(delete_request_index))
-            myServer.send_json_array(fh.read_json_array())   
-        else:
-            fh.append_json_data({"index": fh.get_last_json()['index']+1, "sender": "client", "message": recv_mesg})
-            myServer.send_json_array(fh.read_json_array())
+        recv_json_array = myClient.recv_json_array()
+        chatData.clear()
+        for d in recv_json_array:
+            chatData.append(d)
         read_and_update_data()
 
 enter_text_label = tkinter.Label(window, text="Enter text:")
@@ -82,14 +68,11 @@ class Chat:
 
     def del_msg(self,ind):
         del_msg(ind)
-        # print(f'Delete called for : {ind}')
+        print(f'Delete called for : {ind}')
 
 
 def del_msg(ind):
-    # print(f'Delete called for : {ind}')
-    fh.del_json_with_index(ind)
-    myServer.send_json_array(fh.read_json_array())
-    read_and_update_data()
+    myClient.send_mesg(f'DELETE:{ind}')
 
 def populate_frame(data):
     # Clear the frame
@@ -97,8 +80,8 @@ def populate_frame(data):
         widget.destroy()
 
     # Iterate over the JSON data and create labels for each key-value pair
-    row = fh.get_len_of_json_array()
-    for d in data:
+    row = len(chatData)-1
+    for d in chatData:
         c = Chat(frame,d["index"], d["sender"],d["message"],row)
         row -= 1
 
@@ -107,9 +90,8 @@ def populate_frame(data):
 def read_and_update_data():
     # Load the JSON data from a file (replace with your own JSON file)
     # nfh = fh("data.txt")
-    data = fh.read_json_array()
     # Populate the frame with the JSON data
-    populate_frame(data)
+    populate_frame(chatData)
 
     # Update the scrollable area
     frame.update_idletasks()

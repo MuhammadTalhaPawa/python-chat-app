@@ -23,3 +23,28 @@ class File_Handler:
             json_array.append(json_data)
 
         return json_array
+
+    def get_last_json(self):
+        data = self.read_json_array()
+        last = len(data)
+        return data[last-1]
+    
+    def del_json_with_index(self,ind):
+        data = self.read_json_array()
+        newData =[]
+
+        row = 0
+        for d in data:
+            if(int(d['index']) == ind):
+                pass
+            else:
+                newData.append({"index": row, "sender": d['sender'], "message": d['message']})
+                row += 1
+        
+        self.create_new_file()
+        for d in newData:
+            self.append_json_data(d)
+
+    def get_len_of_json_array(self):
+        data = self.read_json_array()
+        return len(data)

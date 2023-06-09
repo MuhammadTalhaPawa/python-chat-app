@@ -1,41 +1,49 @@
-from connection import Connection 
-from file_handler import File_Handler
+# from connection import Connection 
+# from file_handler import File_Handler
 
-fh = File_Handler("data.txt")
-fh.create_new_file()
+# fh = File_Handler("data.txt")
+# fh.create_new_file()
 
-index = 0
+# myServer = Connection()
+# myServer.init_as_server()
+# myServer.accept_client_connection()
 
-def append_in_file(ind,sender,mesg):
-    data = {
-        'index': ind,
-        'sender': sender,
-        'message': mesg
-    }
-    fh.append_json_data(data)
+# def send_message(msg):
+    # fh.append_json_data({{"index": fh.get_last_json() + 1, "sender": "server", "message": msg}})
+
+
+# index = 0
+
+# def append_in_file(ind,sender,mesg):
+#     data = {
+#         'index': ind,
+#         'sender': sender,
+#         'message': mesg
+#     }
+#     fh.append_json_data(data)
     
 
-myServer = Connection()
-myServer.init_as_server()
-myServer.accept_client_connection()
+# myServer = Connection()
+# myServer.init_as_server()
+# myServer.accept_client_connection()
 
-while True:
-    send_mesg = input("Enter message: ")
-    if send_mesg == 'exit':
-        myServer.end()
-        break
+# while True:
+#     send_mesg = input("Enter message: ")
+#     if send_mesg == 'exit':
+#         myServer.end()
+#         break
     
-    append_in_file(index,'server',send_mesg)
-    index += 1
+#     append_in_file(index,'server',send_mesg)
+#     index += 1
 
-    myServer.send_mesg(send_mesg)
-    recv_mesg = myServer.recv_mesg()
+#     myServer.send_mesg(send_mesg)
+#     recv_mesg = myServer.recv_mesg()
 
-    if recv_mesg == "":
-        myServer.end()
-        break
-    
-    append_in_file(index,'client',recv_mesg)
-    index += 1
+#     if recv_mesg == "":
+#         myServer.end()
+#         break
 
-    print(f'Recieved message: {recv_mesg}')
+#     append_in_file(index,'client',recv_mesg)
+#     index += 1
+
+#     print(f'Recieved message: {recv_mesg}')
