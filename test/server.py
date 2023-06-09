@@ -1,59 +1,41 @@
-import socket
-import threading
+from connection import Connection 
+from file_handler import File_Handler
 
-# Create a socket object
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+fh = File_Handler("data.txt")
+fh.create_new_file()
 
-# Bind the socket to a specific address and port
-s.bind(("localhost", 8000))
+index = 0
 
-# Listen for incoming connections
-s.listen(2)
-
-print("Server listening on port 8000...")
-
-# Accept a connection 1
-client_socket1, client_address1 = s.accept()
-print("Connected to client 1:", client_address1)
-
-# Accept a connection 1
-client_socket2, client_address2 = s.accept()
-print("Connected to client 2:", client_address2)
-
-
-def rec_msg(client,address):
-    data = client.recv(1024).decode()
-    print(f'{address}: send: {data}')
-
-    if data == "":
-        return False
-    else:
-        return True
-     
-run_loop = True
-
-while run_loop:
-    thread1 = threading.Thread(target=lambda: setattr(thread1, 'result', rec_msg(client_socket1, client_address1)))
-    thread2 = threading.Thread(target=lambda: setattr(thread2, 'result', rec_msg(client_socket2, client_address2)))
-    # thread2 = threading.Thread(target=rec_msg,args=(client_socket2,client_address2))
-
-    thread1.start()
-    thread2.start()
-
-    thread1.join()
-    thread2.join()
-    
-    result1 = thread1.result
-    result2 = thread2.result
-
-    if result1 == True and result2 == True:
-        run_loop = True
-    else:     
-        run_loop = False
-    # run_loop = rec_msg(client_socket1,client_address1)
+def append_in_file(ind,sender,mesg):
+    data = {
+        'index': ind,
+        'sender': sender,
+        'message': mesg
+    }
+    fh.append_json_data(data)
     
 
-client_socket1.close()
-client_socket2.close()
-# Close the connection
-s.close()
+myServer = Connection()
+myServer.init_as_server()
+myServer.accept_client_connection()
+
+while True:
+    send_mesg = input("Enter message: ")
+    if send_mesg == 'exit':
+        myServer.end()
+        break
+    
+    append_in_file(index,'server',send_mesg)
+    index += 1
+
+    myServer.send_mesg(send_mesg)
+    recv_mesg = myServer.recv_mesg()
+
+    if recv_mesg == "":
+        myServer.end()
+        break
+    
+    append_in_file(index,'client',recv_mesg)
+    index += 1
+
+    print(f'Recieved message: {recv_mesg}')

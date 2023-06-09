@@ -1,17 +1,19 @@
-import socket
+from connection import Connection
 
-# Create a socket object
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# Connect to the server
-s.connect(("localhost", 8000))
-print("Connected to server")
-
+myClient = Connection()
+myClient.init_as_client()
 
 while True:
-    # Send a message to the server
-    message = input("Enter Message: ")
-    s.send(message.encode())
+    recv_mesg = myClient.recv_mesg()
+    print(f'Recieved message: {recv_mesg}')
+    
+    send_mesg = input("Enter message: ")
+    if send_mesg == 'exit':
+        myClient.end()
+        break
+    myClient.send_mesg(send_mesg)
 
-# Close the connection
-s.close()
+# myServer.init_as_server()
+# myServer.accept_client_connection()
+
+

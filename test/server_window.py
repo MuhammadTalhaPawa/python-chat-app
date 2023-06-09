@@ -36,12 +36,35 @@ def del_chat(index):
     # print("in del")
     print(f'Del chat index : {index}')
 
-for chat in chats:
-    label1 = tk.Label(window,text=f"{chat['index']}: {chat['sender']}: {chat['message']}")
-    label1.pack()
+class Chat_Label:
+    def __init__(self,win,ind,send,mes):
+        self.label = tk.Label(win,text=f"{ind}: {send}: {mes}")
+        self.del_but = tk.Button(win, text="x", command=lambda: del_chat(ind))
 
-    del_button = tk.Button(window, text="del", command=lambda: del_chat(chat['index']))
-    del_button.pack()
+    def show(self):
+        self.label.pack()
+        self.del_but.pack()
+
+for chat in chats:
+    c = Chat_Label(window,chat['index'],chat['sender'],chat['message'])
+    c.show()
+
+
+# c1 = Chat_Label(window,1,"Talha","Hellow")
+# c2 = Chat_Label(window,2,"Saad","Me Fine")
+# c3 = Chat_Label(window,3,"Saad","How are you")
+
+# c1.show()
+# c2.show()
+# c3.show()
+
+
+# for chat in chats:
+#     label1 = tk.Label(window,text=f"{chat['index']}: {chat['sender']}: {chat['message']}")
+#     label1.pack()
+
+#     del_button = tk.Button(window, text="del", command=lambda: del_chat(chat['index']))
+#     del_button.pack()
 
 
 
