@@ -6,6 +6,11 @@ class File_Handler:
 
     def create_new_file(self):
         with open(self.file_name, 'w') as f:
+            json.dump({'index': 0,'sender': 'server', 'message': ""},f)
+            f.write('\n')
+
+    def empty_file(self):
+        with open(self.file_name, 'w') as f:
             pass
 
     def append_json_data(self, json_data):
@@ -16,6 +21,7 @@ class File_Handler:
     def read_json_array(self):
         with open(self.file_name, 'r') as f:
             json_lines = f.readlines()
+
 
         json_array = []
         for line in json_lines:
@@ -41,7 +47,7 @@ class File_Handler:
                 newData.append({"index": row, "sender": d['sender'], "message": d['message']})
                 row += 1
         
-        self.create_new_file()
+        self.empty_file()
         for d in newData:
             self.append_json_data(d)
 

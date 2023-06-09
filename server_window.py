@@ -5,6 +5,7 @@ import threading
 from connection import Connection 
 
 fh = file_handler.File_Handler("data.txt")
+fh.create_new_file()
 
 myServer = Connection()
 myServer.init_as_server()
